@@ -32,13 +32,14 @@ public class App {
         StringBuffer sb = new StringBuffer("============= Order details =============\n");
         for (Item item : map.keySet()) {
             double prices = item.getPrice() * map.get(item);
+            double promotionPrice = prices;
             counts += prices;
             if (halfPrice.contains(item.getId())) {
                 hasPromotion = true;
                 saves += item.getPrice() / 2;
-                prices = item.getPrice() / 2 * map.get(item);
+                promotionPrice = item.getPrice() / 2 * map.get(item);
             }
-            countsWithPromotion += prices;
+            countsWithPromotion += promotionPrice;
             sb.append(item.getName() + " x " + map.get(item) + " = " + (int) prices + " yuan\n");
         }
         sb.append("-----------------------------------\n");
@@ -65,6 +66,7 @@ public class App {
 
         sb.append("===================================\n");
         return sb.toString();
+
     }
     
     public Item whichItem(String str) {
