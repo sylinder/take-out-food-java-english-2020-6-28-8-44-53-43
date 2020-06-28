@@ -14,7 +14,72 @@ public class App {
 
     public String bestCharge(List<String> inputs) {
         //TODO: write code here
+        Set<String> halfPrice = new HashSet<>();
+        halfPrice.add("ITEM0001");
+        halfPrice.add("ITEM0022");
 
+        Map<Item, Integer> map = new LinkedHashMap<>();
+        for (String str : inputs) {
+            String[] arr = str.split(" ");
+            Item item = whichItem(arr[0]);
+            map.put(item, Integer.parseInt(arr[arr.length - 1]));
+        }
+
+        double counts = 0.0;
+        double countsWithPromotion = 0.0;
+        boolean hasPromotion = false;
+        double saves = 0.0;
+        StringBuffer sb = new StringBuffer("============= Order details =============\n");
+        for (Item item : map.keySet()) {
+            double prices = item.getPrice() * map.get(item);
+            counts += prices;
+            if (halfPrice.contains(item.getId())) {
+                hasPromotion = true;
+                saves += item.getPrice() / 2;
+                prices = item.getPrice() / 2 * map.get(item);
+            }
+            countsWithPromotion += prices;
+            sb.append(item.getName() + " x " + map.get(item) + " = " + (int) prices + " yuan\n");
+        }
+        sb.append("-----------------------------------\n");
+
+        if (counts >= 30) {
+            hasPromotion = true;
+            counts -= 6;
+        }
+
+        if (hasPromotion) {
+            sb.append("Promotion used:\n");
+            if (counts <= countsWithPromotion) {
+                sb.append("Deduct 6 yuan when the order reaches 30 yuan, saving 6 yuan\n");
+                sb.append("-----------------------------------\n");
+                sb.append("In total: " + (int)counts + " yuan\n");
+            } else {
+                sb.append("Half price for certain dishes (braised chicken and cold noodles), saving " + (int)saves + " yuan\n");
+                sb.append("-----------------------------------\n");
+                sb.append("Total: " + (int)countsWithPromotion + " yuan\n");
+            }
+        } else {
+            sb.append("In total: " + (int)counts + " yuan\n");
+        }
+
+        sb.append("===================================\n");
+        return sb.toString();
+    }
+    
+    public Item whichItem(String str) {
+        List<Item> ALL_ITEMS = Arrays.asList(
+                new Item("ITEM0001", "Braised chicken", 18.00),
+                new Item("ITEM0013", "Chinese hamburger", 6.00),
+                new Item("ITEM0022", "Cold noodles", 8.00),
+                new Item("ITEM0030", "coca-cola", 2.00)
+        );
+
+        for (Item item : ALL_ITEMS) {
+            if (item.getId().equals(str)) {
+                return item;
+            }
+        }
         return null;
     }
 }
